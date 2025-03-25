@@ -19,9 +19,10 @@ class InvokeOptions(Enum):
     THISWEEK = 3
     NEXTWEEK = 4
 
-def get_api_response(url: str, InvokeOptions) -> list:
+def get_api_response(url: str, InvokeOptions) -> [list, bool]:
     """
-    Fetch an API response from the given URL using the given invoke option. 
+    Fetch an API response from the given URL using the given invoke option.
+    If a single day was requested but the day doesn't have a timetable associated with it, the nearest available timetable is returned and the return boolean is set to False.
 
     Args:
         url (str): The API URL.
@@ -29,6 +30,10 @@ def get_api_response(url: str, InvokeOptions) -> list:
 
     Returns:
         list: The API response (None if a singular day was requested, but it is a day off).
+        bool: Whether or not the returnd list belongs to the requested day:
+            - True: The return list contains the timetable for the specified day;
+            - False: The return list contains the nearest proper timetable instead;
+            - None: When a day range has been requested and such logic cannot be applied.
     """
 
     do_single_day = False
@@ -51,13 +56,15 @@ def get_api_response(url: str, InvokeOptions) -> list:
     json_file = json.load(urlopen(f"{url.replace("!timestamp", str(timestamp))}"))
 
     if do_single_day:
+        if not json_file:
+            return None, False
         # check if result belongs to the timestamp (and account for possible timezone shenanigans when doing this check, too)
         if abs(int(datetime.strptime(json_file[0]["date"], "%Y-%m-%d").timestamp()) - timestamp) <= 43200:
-            return json_file[0]
+            return json_file[0], True
         else:
-            return None
+            return json_file[0], False
     
-    return json_file
+    return json_file, None
 
 def get_groups(url: str):
     print(url)

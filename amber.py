@@ -43,7 +43,7 @@ def console_survey():
 
 group = urllib.parse.quote("GROUP_NAME")
 
-api_response = get_api_response(program_states.url_timetable.replace("!group", group), InvokeOptions(console_survey()))
+api_response, return_as_requested = get_api_response(program_states.url_timetable.replace("!group", group), InvokeOptions(console_survey()))
 
 day_template, key_list = pull_message_template()
 output = ""
@@ -65,6 +65,8 @@ match api_response:
             output = output[:-4]
 
     case dict(): # single day parsing
+        if not return_as_requested:
+            print("The day specified doesn't have classes. Here's the earliest day that has a timetable instead:")
         # -- working space with api_response as day --
         output += f"\n===--  {api_response["date"]} --===\n"
         for lesson in api_response["list"]:
