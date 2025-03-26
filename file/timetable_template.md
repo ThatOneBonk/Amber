@@ -1,4 +1,4 @@
 Дисциплина: !disciplines
-!corpus, аудитория !auditorium
+!corpus, аудитория !auditorium (!types)
 !timeStart - !timeEnd
 !teachers

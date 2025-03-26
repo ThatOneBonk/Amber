@@ -66,7 +66,7 @@ match api_response:
 
     case dict(): # single day parsing
         if not return_as_requested:
-            print("The day specified doesn't have classes. Here's the earliest day that has a timetable instead:")
+            print("The day specified doesn't have classes. Here's the earliest day that has a timetable instead:", end="")
         # -- working space with api_response as day --
         output += f"\n===--  {api_response["date"]} --===\n"
         for lesson in api_response["list"]:

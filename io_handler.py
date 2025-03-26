@@ -18,7 +18,7 @@ def config_create():
         "url_timetable": "",
         "logging_level": ""
     }
-    with open("./file/config.json", "w", encoding="utf-8") as config_json_file:
+    with open(f"{script_dir}/file/config.json", "w", encoding="utf-8") as config_json_file:
         json.dump(config_initial, config_json_file, ensure_ascii=False, indent=4)
     logging.critical("[config_create] Brand new config had to be made. Please fill it in.")
     exit()
@@ -34,7 +34,7 @@ def config_pull(element_name: str) -> str | bool:
         str/bool: Value by the passed key.
     """
     try:
-        with open("./file/config.json", "r") as config_json_file:
+        with open(f"{script_dir}/file/config.json", "r") as config_json_file:
             config_file = json.load(config_json_file)
             config_element = config_file[element_name]
             try:
@@ -60,7 +60,7 @@ def token_pull():
         The API key.
     """
     try:
-        with open("./file/credentials.txt", "r") as token_file:
+        with open(f"{script_dir}/file/credentials.txt", "r") as token_file:
             return(token_file.read())
     except FileNotFoundError:
         logging.critical("[token_pull] Credentials file not found!")
@@ -79,7 +79,7 @@ def pull_message_template():
             - The !date key requires special treatment so it is always removed from the key list.
     """
     try:
-        with open(f"./file/timetable_template.md", "r") as template_file:
+        with open(f"{script_dir}/file/timetable_template.md", "r") as template_file:
             template_text = template_file.read()
     except (FileNotFoundError, IOError):
         logging.warning(f"[pull_message_template] Template missing or invalid.")
@@ -90,3 +90,5 @@ def pull_message_template():
     if "!date" in matches: matches.remove('!date')
 
     return template_text, matches
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
