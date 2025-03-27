@@ -29,6 +29,8 @@ def console_survey():
     #     print("This group isn't available. Did you spell it right?")
     #     exit()
 
+    print(f"\n{datetime.today().strftime("%b %d, %A")}\n")
+
     print(f"Please select the date. Here are your options:")
     for option in InvokeOptions:
         print(f"{option.name} ({option.value})")
@@ -51,12 +53,14 @@ output = ""
 # TODO fix timezones
 # TODO get current time and compare to start/end times, displaying the gap
 # TODO store parsed stuff as cache and remove cache older than a few hours old
+# TODO add single day options to whole week choices (get specific day)
 
 match api_response:
     case list(): # whole week parsing
         for day in api_response:
             # -- working space with day as day --
-            output += f"\n===--  {day["date"]} --===\n"
+            human_date = datetime.strptime(day["date"], "%Y-%m-%d").strftime("%b %d, %A")
+            output += f"\n===--  {human_date} --===\n"
             for lesson in day["list"]:
                 unit = day_template
                 for key in key_list:
@@ -66,9 +70,10 @@ match api_response:
 
     case dict(): # single day parsing
         if not return_as_requested:
-            print("The day specified doesn't have classes. Here's the earliest day that has a timetable instead:", end="")
+            print("\nThe day specified doesn't have classes. Here's the earliest day that has a timetable instead:")
         # -- working space with api_response as day --
-        output += f"\n===--  {api_response["date"]} --===\n"
+        human_date = datetime.strptime(api_response["date"], "%Y-%m-%d").strftime("%b %d, %A")
+        output += f"\n===--  {human_date} --===\n"
         for lesson in api_response["list"]:
             unit = day_template
             for key in key_list:
