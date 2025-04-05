@@ -16,6 +16,7 @@ def config_create():
     """
     config_initial = { 
         "url_timetable": "",
+        "url_groups": "",
         "logging_level": ""
     }
     with open(f"{script_dir}/file/config.json", "w", encoding="utf-8") as config_json_file:
