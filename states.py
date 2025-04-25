@@ -1,4 +1,4 @@
-from io_handler import *
+from io_handler import config_pull
 
 def singleton(cls):
     """ Singleton boilerplate. """
@@ -12,8 +12,8 @@ def singleton(cls):
     return get_instance
 
 @singleton
-class states:
-    """ This class contains the temporary data storage used by various modules of this bot. """
+class States:
+    """ This class contains the temporary data storage used by various modules of this application. """
     def __init__(self):
         self.reset()
     
