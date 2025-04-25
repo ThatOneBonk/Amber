@@ -1,32 +1,37 @@
+from datetime import datetime, timezone, timedelta
 from urllib.request import urlopen
 from enum import Enum
-from datetime import *
-import hashlib
-import logging
 import json
 import ssl
 
-from io_handler import *
 from states import states
 
-ssl._create_default_https_context = ssl._create_stdlib_context # SSL init
+ssl_context = ssl.create_default_context()
+# fucking server has busted certs
+# TODO add an option to pass cert path
+# uncomment the line directly below and import certifi to use proper certs
+# context.load_verify_locations(cafile=where())
+ssl_context.load_verify_locations(cafile="./file/credentials/server_cert.pem")
 
 program_states = states()
 
 class InvokeOptions(Enum):
+    """
+    Arbitrary invoke options that the get_api_response() function expects.
+    """
     TODAY = 1
     TOMORROW = 2
-    THISWEEK = 3
-    NEXTWEEK = 4
+    THIS_WEEK = 3
+    NEXT_WEEK = 4
 
-def get_api_response(url: str, InvokeOptions) -> [list, bool]:
+def get_api_response(url: str, invoke_options: InvokeOptions) -> [list, bool]:
     """
     Fetch an API response from the given URL using the given invoke option.
     If a single day was requested but the day doesn't have a timetable associated with it, the nearest available timetable is returned and the return boolean is set to False.
 
     Args:
         url (str): The API URL.
-        InvokeOptions (enum): The date or range for which the timetable should be pulled.
+        invoke_options (InvokeOptions): The date or range for which the timetable should be pulled.
 
     Returns:
         list: The API response (None if a singular day was requested, but it is a day off).
@@ -38,7 +43,7 @@ def get_api_response(url: str, InvokeOptions) -> [list, bool]:
 
     do_single_day = False
 
-    match InvokeOptions.name:
+    match invoke_options.name:
         case "TODAY":
             # FIXME THIS DOES NOT SET THE TIMEZONE BE CAREFUL FOR THE LOVE OF GOD
             timestamp = int(datetime.now(timezone.utc).replace(hour = 0, minute = 0, second = 0, microsecond = 0).strftime('%s'))
@@ -53,7 +58,7 @@ def get_api_response(url: str, InvokeOptions) -> [list, bool]:
             # it uh, it does work, i can't complain
             timestamp = int((datetime.now(timezone.utc).replace(hour = 0, minute = 0, second = 0, microsecond = 0) - timedelta(days = datetime.now().weekday())).strftime('%s')) + 604800
 
-    json_file = json.load(urlopen(f"{url.replace("!timestamp", str(timestamp))}"))
+    json_file = json.load(urlopen(f"{url.replace("!timestamp", str(timestamp))}", context=ssl_context))
 
     if do_single_day:
         if not json_file:
@@ -65,11 +70,3 @@ def get_api_response(url: str, InvokeOptions) -> [list, bool]:
             return json_file[0], False
     
     return json_file, None
-
-def get_groups(url: str):
-    print(url)
-    groups = json.load(urlopen(url))
-    output = []
-    for group in groups["results"]:
-        output.append(group["text"])
-    return output

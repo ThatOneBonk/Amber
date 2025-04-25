@@ -2,7 +2,26 @@ import json
 import os.path
 import logging
 import re
-from distutils.util import strtobool
+
+def strtobool (val: str) -> bool:
+    """
+    Convert a string representation of truth to true (1) or false (0).
+
+    Args:
+        val (str): Function input.
+            - True values are 'y', 'yes', 't', 'true', 'on', and '1'.
+            - False values are 'n', 'no', 'f', 'false', 'off', and '0'.
+    
+    Returns:
+        bool: Function output.
+    """
+    val = val.lower()
+    if val in ('y', 'yes', 't', 'true', 'on', '1'):
+        return True
+    elif val in ('n', 'no', 'f', 'false', 'off', '0'):
+        return False
+    else:
+        raise ValueError(f"invalid truth value {val}")
 
 def config_create():
     """
@@ -14,7 +33,7 @@ def config_create():
     Returns:
         None.
     """
-    config_initial = { 
+    config_initial = {
         "url_timetable": "",
         "url_groups": "",
         "logging_level": ""
@@ -35,7 +54,7 @@ def config_pull(element_name: str) -> str | bool:
         str/bool: Value by the passed key.
     """
     try:
-        with open(f"{script_dir}/file/config.json", "r") as config_json_file:
+        with open(f"{script_dir}/file/config.json", "r", encoding="utf8") as config_json_file:
             config_file = json.load(config_json_file)
             config_element = config_file[element_name]
             try:
@@ -44,11 +63,9 @@ def config_pull(element_name: str) -> str | bool:
                 return config_element
     except FileNotFoundError:
         config_create()
-    except:
+    except json.JSONDecodeError:
         logging.error("[config_pull] No such variable in config or unable to parse JSON")
         return "null"
-        # FIXME this will fail if config_pull("logging_level") fails with anything other than file not found
-        # because the logging level won't be set yet
 
 def token_pull():
     """
@@ -61,7 +78,7 @@ def token_pull():
         The API key.
     """
     try:
-        with open(f"{script_dir}/file/credentials.txt", "r") as token_file:
+        with open(f"{script_dir}/file/credentials.txt", "r", encoding="utf8") as token_file:
             return(token_file.read())
     except FileNotFoundError:
         logging.critical("[token_pull] Credentials file not found!")
@@ -80,10 +97,10 @@ def pull_message_template():
             - The !date key requires special treatment so it is always removed from the key list.
     """
     try:
-        with open(f"{script_dir}/file/timetable_template.md", "r") as template_file:
+        with open(f"{script_dir}/file/timetable_template.md", "r", encoding="utf8") as template_file:
             template_text = template_file.read()
     except (FileNotFoundError, IOError):
-        logging.warning(f"[pull_message_template] Template missing or invalid.")
+        logging.warning("[pull_message_template] Template missing or invalid.")
         return("Missing template")
 
     matches = re.findall(r"!\w+", template_text)
