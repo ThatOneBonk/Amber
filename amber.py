@@ -35,7 +35,7 @@ def console_survey() -> tuple[int, str, Optional[str]]:
     parser.add_argument("-m", "--mode", required=False, 
     choices=["headless", "faceless"],
     default="headless",
-    help="run either headless (in TTY) or faceless (as Telegram bot)")
+    help="run either headless (in TTY) or faceless (as Telegram bot), defaults to headless")
 
     parser.add_argument("-l", "--logging_level", required=False,
     choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],

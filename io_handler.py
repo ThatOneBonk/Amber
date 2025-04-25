@@ -35,13 +35,11 @@ def config_create():
     """
     config_initial = {
         "url_timetable": "",
-        "url_groups": "",
         "logging_level": ""
     }
     with open(f"{script_dir}/file/config.json", "w", encoding="utf-8") as config_json_file:
         json.dump(config_initial, config_json_file, ensure_ascii=False, indent=4)
-    logging.critical("[config_create] Brand new config had to be made. Please fill it in.")
-    exit()
+    raise SystemExit("[config_create] Brand new config had to be made. Please fill it in.")
 
 def config_pull(element_name: str) -> str | bool:
     """

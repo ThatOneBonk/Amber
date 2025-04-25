@@ -23,7 +23,6 @@ class States:
             "next_week_hash": "None",
             "day_scope_start": "None",
             "day_scope_end": "None",
-            "url_timetable": config_pull("url_timetable"),
-            "url_groups": config_pull("url_groups")
+            "url_timetable": config_pull("url_timetable")
         }
         self.__dict__.update(self._defaults)
