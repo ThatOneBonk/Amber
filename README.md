@@ -1,9 +1,9 @@
 # Amber
 (Not the Pyro archer)
 ## What is Amber?
-Amber is a Python utility that fetches and formats a timetable from a REST API into a clean, readable message. This bypasses the need to go to a site or other middlemen that could be slow or, frankly, poorly implemented.
-Amber was designed with a specific REST API in mind (specifying which would be a privacy breach).
-The project started as a Telegram bot, but the current implementation of Amber doesn't communicate with Telegram yet. It's also great as a CLI utility, as it turns out.
+Amber is a Python utility that fetches and formats a timetable from a REST API into a clean, readable message. This bypasses the need to go to a site or other middlemen that could be slow or, frankly, poorly implemented.\
+Amber was designed with a specific REST API in mind (specifying which would be a privacy breach).\
+The project started as a Telegram bot, but the current implementation of Amber doesn't communicate with Telegram yet. It's also great as a CLI utility, as it turns out.\
 ## Configuration
 A default configuration file is created in the `file/` directory if it is not already present.
 - `url_timetable` is the URL of the REST API that Amber will use.
@@ -15,9 +15,9 @@ Additionally, a `file/timetable_template.md` file is required. This file defines
 ## How to run
 First off,
 ```bash
-git clone https://github.com/ThatOneBonk/Amber.git;cd Amber
+git clone https://github.com/ThatOneBonk/Amber.git; cd Amber
 ```
-You can then run 
+You can then run:
 ```bash
 python amber.py
 ```
