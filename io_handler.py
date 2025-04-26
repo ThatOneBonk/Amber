@@ -6,6 +6,7 @@ import re
 def strtobool (val: str) -> bool:
     """
     Convert a string representation of truth to true (1) or false (0).
+    This function is ported from the `distutils` standard Python module.
 
     Args:
         val (str): Function input.
@@ -82,7 +83,7 @@ def token_pull():
         logging.critical("[token_pull] Credentials file not found!")
         raise
 
-def pull_message_template():
+def pull_message_template() -> tuple[str, list]:
     """
     This function is used by the API handler module to get the desired template and the set of keys.
 

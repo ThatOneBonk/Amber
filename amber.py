@@ -6,8 +6,9 @@ import urllib.parse
 from typing import Optional
 from datetime import datetime
 
-from states import States
+from InquirerPy import inquirer
 
+from states import States
 from api_handler import InvokeOptions, get_api_response
 from io_handler import config_pull, pull_message_template
 
@@ -98,9 +99,7 @@ def headless(args: argparse.Namespace):
     print(f"\n{datetime.today().strftime("%b %d, %A")}\n")
 
     if not group:
-        print("Please enter your group.\n---\n-> ", end="")
-        group = str(input())
-        print("")
+        group = inquirer.text(message="Please enter your group:").execute()
 
     pattern = r"[А-Я]+-[0-9]+"
     if not re.search(pattern, group):
@@ -108,15 +107,12 @@ def headless(args: argparse.Namespace):
     else:
         group = urllib.parse.quote(group)
 
-    print("Please select the date. Here are your options:")
-    for option in InvokeOptions:
-        print(f"{option.name} ({option.value})")
-    print("---\n-> ", end="")
+    choices = [choice.name for choice in InvokeOptions]
 
-    try:
-        option = int(input())
-    except ValueError as e:
-        raise SystemExit("Invalid selection.") from e
+    option = inquirer.select(
+        message="Pick a range:",
+        choices=choices,
+    ).execute()
 
     print("\nGive me a moment...")
 
@@ -125,7 +121,7 @@ def headless(args: argparse.Namespace):
     # and triggers a pylint false positive.
     api_response, return_as_requested = \
         get_api_response(program_states.url_timetable.replace("!group", group), \
-        InvokeOptions(option), \
+        InvokeOptions[option], \
         cert)
 
     day_template, key_list = pull_message_template()
